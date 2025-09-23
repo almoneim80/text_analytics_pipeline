@@ -1,51 +1,70 @@
-import text_analyzer as ta
+import analyzer.text_analyzer as ta
 import pathlib
+import logging
+
+# logging config
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)s] %(asctime)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler("outputs/app.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
 
 # read file
 ext = ['.txt']
 
+def read_files(file_paths):
+    data = []
+    for file in file_paths:
+        path = pathlib.Path(file)
 
-def read_files(file_path):
-    for file in file_path:
-        if pathlib.Path(file) is False:
+        if not path.exists() or path.is_dir() or path.suffix not in ext:
+            logging.warning(f"Skipping invalid path: {file}")
             continue
-
-        if pathlib.Path(file).is_dir():
-            continue
-
-        if pathlib.Path(file).suffix not in ext:
-            continue
-    else:
-        data = []
-        for file in file_path:
-            with open(file, 'r', encoding="utf-8") as f:
-                data.append(f.read())
+        
+        for encoding in ["utf-8", "utf-16"]:
+            try:
+                with open(file, 'r', encoding=encoding) as f:
+                    text = f.read()
+                    data.append(text)
+                    logging.info(f"Read {file} with {encoding}")
+                    break
+            except UnicodeDecodeError:
+                continue
+        else:
+            logging.error(f"Could not read {file} with UTF-8 or UTF-16")
+            
     return data
 
 
-print(f"please input all files you want to analyse, (just extension allowed is {ext})")
-print("If you done enter (C) character")
+logging.info(f"Please input all files you want to analyse (extensions allowed: {ext})")
+logging.info("If done, enter (C) character")
 
 
 paths = []
 inp = ''
 for i in range(10):
     inp = input("Please, input file path: ")
-    if inp == 'C' or inp == 'c':
+    if inp.lower() == 'c':
         break
     else:
         if pathlib.Path(inp).is_dir():
-            print("path not valid")
+            logging.error(f"path {inp} is not valid")
         elif pathlib.Path(inp).suffix not in ext:
-            print("path not valid")
+            logging.warning(f"file {inp} extension is not valid")
         else:
             paths.append(inp)
 
 if len(paths) == 0:
-    print("Please input any file you want to analyse")
-
-text = read_files(paths)
-for i in range(len(text)):
-    ta.outputs(text[i], i, True, True, 8, 5, 1)
-    ta.out_to_file()
-    ta.top_popular_words_to_csv()
+    logging.error("No files provided for analysis")
+else:
+    text = read_files(paths)
+    analyzer = ta.TextAnalyzer()
+    for i, t in enumerate(text):
+        if t == "":
+            logging.warning(f"file  {i} is null")
+            continue
+        analyzer.analyze(text=t, file_number=i, num_of_top_words=8, word_characters=5, support_statistics=True, support_clean=True)
