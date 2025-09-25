@@ -1,0 +1,16 @@
+{
+  "language": "not-support-yet",
+  "stopwords": ["و", "في", "من", "على", "عن", "إلى"],
+  "output_folder": "outputs/",
+  "supported_files":[".txt"],
+  "supported_encoding":["utf-8", "utf-16"],
+  "export_json": true,
+  "export_csv": true,
+  "export_excel": false,
+  "export_console":true,
+  "num_of_top_words": 10,
+  "word_characters": 2,
+  "normalize_text": true,
+  "support_clean":true,
+  "support_statistics":true
+}

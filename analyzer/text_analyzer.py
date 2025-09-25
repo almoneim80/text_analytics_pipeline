@@ -1,107 +1,109 @@
 import statistics as stats
 import collections
-import utils as ut
-import exporters.export_analyze as exa
+import utils.utils  as ut
+import logging
+
+# logging config
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)s] %(asctime)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler("logs/app.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
 
 class TextAnalyzer():
     def __init__(self):
-        
-        self.text = ""           #النص المراد تحليله
-        self.cleaned_text = ""   #حفظ النص النظيف
-        self.results = {}        #حفظ النتائج
-        self.num_of_top_words = 2
-        self.word_characters = 1
-        self.support_statistics = True
-        self.support_clean = True
-        self.file_number = 1
+
+        self.results = {}
 
     # characters count
-    def _chars_count(self):
-        number_of_chars = len(self.cleaned_text)
+    def _chars_count(self, cleaned_text):
+        number_of_chars = len(cleaned_text)
         self.results.update({"chars_count": number_of_chars})
         return number_of_chars
         
     # the average of words length
-    def _words_length_avg(self):
+    def _words_length_avg(self, cleaned_text):
         total_length = 0
         length_avg = 0
-        lengths = ut.words_length(self.cleaned_text)
+        lengths = ut.words_length(cleaned_text)
         length_avg = sum(lengths) / len(lengths) if lengths else 0
         self.results["words_length_avg"] = length_avg
         return length_avg
         
     # top mode words
-    def _top_popular_words(self):
+    def _top_popular_words(self, cleaned_text, word_characters, num_of_top_words):
         top_mode = []
         i = 1
 
-        if len(ut.convert_to_list(self.cleaned_text)) <= 1:
+        if len(ut.convert_to_list(cleaned_text)) <= 1:
             return None
             
-        if self.word_characters < 1:
+        if word_characters < 1:
             return "Word Characters can not be less than 1"
-        elif self.word_characters > 1:
-            all_words = ut.filtered_words_by_char_num(self.cleaned_text, self.word_characters)
+        elif word_characters > 1:
+            all_words = ut.filtered_words_by_char_num(cleaned_text, word_characters)
         else:
-            all_words = ut.convert_to_list(self.cleaned_text)
+            all_words = ut.convert_to_list(cleaned_text)
 
-        for top in collections.Counter(all_words).most_common(self.num_of_top_words):
+        for top in collections.Counter(all_words).most_common(num_of_top_words):
             top_mode = top_mode + [top[0]]
 
         self.results.update({"top_popular_words": top_mode})
         return top_mode
         
     # Popular word
-    def _popular_word(self):
-        if len(ut.convert_to_list(self.cleaned_text)) <= 1:
+    def _popular_word(self, cleaned_text, word_characters):
+        words = ut.convert_to_list(cleaned_text)
+        if len(words) <= 1:
             return None
 
-        if self.word_characters < 1 or self.word_characters not in ut.words_length(self.cleaned_text):
-            self.results.update({"popular_word": "Word Characters is invalid"})
-            return "Word Characters is invalid"
-        elif self.word_characters > 1:
-            populars = collections.Counter(ut.filtered_words_by_char_num(self.cleaned_text, self.word_characters)).most_common(1)[0][0]
+        if word_characters <= 1:
+            populars = stats.mode(words)
             self.results.update({"popular_word": populars})
             return populars
         else:
-            populars = stats.mode(ut.convert_to_list(self.cleaned_text))
+            filtered_words = ut.filtered_words_by_char_num(cleaned_text, word_characters)
+            if not filtered_words:
+                self.results.update({"popular_word": "No words with given character length"})
+                return "No words with given character length"
+            populars = collections.Counter(filtered_words).most_common(1)[0][0]
             self.results.update({"popular_word": populars})
             return populars
             
 
     # words count
-    def _words_count(self):
-        if len(ut.convert_to_list(self.cleaned_text)) <= 1:
+    def _words_count(self, cleaned_text):
+        if len(ut.convert_to_list(cleaned_text)) < 1:
             return 0
-        counts = len(ut.convert_to_list(self.cleaned_text))
+        counts = len(ut.convert_to_list(cleaned_text))
         self.results.update({"words_count": counts})
         return counts
     
     def analyze(self, text, file_number = 1, num_of_top_words = 2, word_characters = 1, support_statistics = True, support_clean = True):
-        self.text = text
-        self.cleaned_text = ut.clean_text(self.text)
-        if not self.cleaned_text.strip():
+        cleaned_text = ut.clean_text(text)
+        if not cleaned_text.strip():
             self.results.update({
-            "words_count": 0,
-            "chars_count": 0,
-            "words_length_avg": 0,
-            "popular_word": None,
-            "top_popular_words": []})
-            return
+                "words_count": 0,
+                "chars_count": 0,
+                "words_length_avg": 0,
+                "popular_word": None,
+                "top_popular_words": []})
+            logging.warning("Text is empty")
 
         self.results.update({"file_number": file_number})
-        self.num_of_top_words = num_of_top_words
-        self.word_characters = word_characters
-        self.support_statistics = support_statistics
-        self.support_clean = support_clean
-        self.file_number = file_number
+        self.results.update({"orginal_text": text})
+        self.results.update({"cleaned_text": cleaned_text})
+        self.results.update({"support_statistics": support_statistics})
+        self.results.update({"support_clean": support_clean})
     
-        self._chars_count()
-        self._words_length_avg()
-        self._top_popular_words()
-        self._popular_word()
-        self._words_count()
+        self._chars_count(cleaned_text)
+        self._words_length_avg(cleaned_text)
+        self._top_popular_words(cleaned_text, word_characters, num_of_top_words)
+        self._popular_word(cleaned_text, word_characters)
+        self._words_count(cleaned_text)
 
-        exa.Export.print_console(self.text, self.cleaned_text, self.results, support_clean, support_statistics)
-        exa.Export.export_csv(self.results, self.file_number)
-        exa.Export.export_json(self.results, self.file_number)
+        return self.results

@@ -59,11 +59,8 @@ def filter_to_remove(coming_words_list, word):
     >>> filter_to_remove(['apple', 'banana', 'apple', 'cherry'], 'apple')
     ['banana', 'cherry']
     """
-    words_list_after_filter = coming_words_list
-    for w in coming_words_list:
-        if word == w:
-            words_list_after_filter.remove(w)
-    return words_list_after_filter
+
+    return [w for w in coming_words_list if w != word]
 
 
 def convert_to_list(text):
