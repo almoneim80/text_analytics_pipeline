@@ -1,0 +1,34 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+
+# IDE settings
+.vscode/
+.idea/
+
+# outputs
+outputs/
+
+# data
+data/
+
+# test
+test/
+
+# /Logs
+logs/
+*.log
+
+# Test / coverage reports
+htmlcov/
+.coverage
+.pytest_cache/
+
+# OS files
+.DS_Store
+Thumbs.db

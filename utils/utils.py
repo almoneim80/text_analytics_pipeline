@@ -1,7 +1,9 @@
 import string
+import re
+import emoji
 
 # cleaning text
-def clean_text(dirty_text):
+def clean_text(dirty_text, normalize_text, rlen):
     """
     Cleans the input text by removing punctuation, special symbols, digits, and whitespace characters.
 
@@ -17,6 +19,13 @@ def clean_text(dirty_text):
     """
     symbols = string.punctuation + ":>,<،.#’”…“—?؟" + "0123456789" + '\n\t\r'
     cleaned_text = dirty_text.translate(str.maketrans('', '', symbols))
+
+    if normalize_text:
+        cleaned_text = normalize_arabic(cleaned_text)
+
+    if rlen:
+        cleaned_text = remove_links_emojis_numbers(cleaned_text)
+        
     return cleaned_text
 
 
@@ -100,3 +109,44 @@ def words_length(text):
     """
     lengths_list = [len(word) for word in convert_to_list(text)]
     return lengths_list
+
+
+def normalize_arabic(text):
+    # Removing the mold
+    text = re.sub(r'[\u0617-\u061A\u064B-\u0652]', '', text)
+    # Unification of the letters 
+    text = re.sub(r'[إأآا]', 'ا', text)
+    text = re.sub(r'ى', 'ي', text)
+    text = re.sub(r'ؤ', 'و', text)
+    text = re.sub(r'ئ', 'ي', text)
+    return text
+
+
+def remove_links_emojis_numbers(text):
+    """
+    Improved text cleaning: removal of links, emojis, Arabic and English numbers, and reduction of excess spaces.
+    """
+    # Removing links
+    text = re.sub(r'https?://\S+|www\.\S+|\b\S+\.(com|net|org|edu|gov)\b', '', text)
+    # Remove emoji
+    text = emoji.replace_emoji(text, replace='')
+    # Remove numbers
+    text = re.sub(r'[0-9٠-٩]+', '', text)
+
+    # Reduce excess white space
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
+
+def remove_stopwords(words_list, stopwords, prefixes):
+    filtered_words = []
+    for word in words_list:
+        for prefix in prefixes:
+            if word.startswith(prefix) and len(word) > len(prefix):
+                word = word[len(prefix):]
+                break
+
+        if word not in stopwords:
+            filtered_words.append(word)
+
+    return filtered_words
