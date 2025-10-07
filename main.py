@@ -79,8 +79,7 @@ def analyze_files(texts: str, analyzer, exporter, num_of_top_words: int, word_ch
             stopwords=stopwords,
             prefixes=prefixes,
             ngrams_size=ngrams_size,
-            tfidf_ngram_range=tfidf_ngram_range,
-            analyze_all_together=analyze_all_together
+            tfidf_ngram_range=tfidf_ngram_range
         )
         # export results once
         if export_console:
@@ -109,8 +108,7 @@ def analyze_files(texts: str, analyzer, exporter, num_of_top_words: int, word_ch
             stopwords=stopwords,
             prefixes=prefixes,
             ngrams_size=ngrams_size,
-            tfidf_ngram_range=tfidf_ngram_range,
-            analyze_all_together=analyze_all_together
+            tfidf_ngram_range=tfidf_ngram_range
         )
 
         if export_console:

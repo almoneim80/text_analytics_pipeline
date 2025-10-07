@@ -113,12 +113,17 @@ def words_length(text):
 
 def normalize_arabic(text):
     # Removing the mold
-    text = re.sub(r'[\u0617-\u061A\u064B-\u0652]', '', text)
+    text = re.sub(r'[\u0617-\u061A\u064B-\u0652\u0670]', '', text)
     # Unification of the letters 
     text = re.sub(r'[إأآا]', 'ا', text)
     text = re.sub(r'ى', 'ي', text)
     text = re.sub(r'ؤ', 'و', text)
     text = re.sub(r'ئ', 'ي', text)
+    text = re.sub(r'ة', 'ه', text)
+
+    text = re.sub(r'[^\w\s]', '', text)
+
+    text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 
@@ -150,3 +155,12 @@ def remove_stopwords(words_list, stopwords, prefixes):
             filtered_words.append(word)
 
     return filtered_words
+
+def split_text_by_language(text):
+    arabic_chars = re.findall(r'[\u0600-\u06FF]+', text)
+    english_chars = re.findall(r'[A-Za-z]+',text)
+
+    arabic_text = " ".join(arabic_chars)
+    english_text = " ".join(english_chars)
+
+    return english_text, arabic_text

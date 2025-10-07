@@ -38,27 +38,19 @@ class TextAnalyzer:
 
     # top mode words
     def _top_popular_words(self, cleaned_text, word_characters, num_of_top_words, stopwords, prefixes):
-        top_mode = []
-        i = 1
+        words = ut.convert_to_list(cleaned_text)
+        if not words:
+            self.results.update({"top_popular_words": []})
+            return []
 
-        if len(ut.convert_to_list(cleaned_text)) <= 1:
-            return None
+        if word_characters > 1:
+            words = ut.filtered_words_by_char_num(words, word_characters)
 
-        if word_characters < 1:
-            return "Word Characters can not be less than 1"
-        elif word_characters > 1:
-            filtered_words = ut.filtered_words_by_char_num(cleaned_text, word_characters)
-            if not filtered_words:
-                self.results.update({"top_popular_words": "No words with given character length"})
-                return "No words with given character length"
-        else:
-            filtered_words = ut.convert_to_list(cleaned_text)
+        if stopwords:
+            words = ut.remove_stopwords(words, stopwords, prefixes)
 
-        if len(stopwords) > 0:
-            filtered_words = ut.remove_stopwords(filtered_words, stopwords, prefixes)
-
-        for word, count in collections.Counter(filtered_words).most_common(num_of_top_words):
-            top_mode.append((word, count))
+        counter = collections.Counter(words)
+        top_mode = counter.most_common(num_of_top_words)
 
         self.results.update({"top_popular_words": top_mode})
         return top_mode
@@ -116,8 +108,11 @@ class TextAnalyzer:
         return popular_phrases
 
     # TF-IDF
-    def _calculate_tfidf(self, documents, stopwords, ngram_range):
-        vectorizer = TfidfVectorizer(stop_words=stopwords, ngram_range=ngram_range)
+    def _calculate_tfidf(self, documents, stopwords, tfidf_ngram_range):
+        if isinstance(tfidf_ngram_range, list):
+            tfidf_ngram_range = tuple(tfidf_ngram_range)
+
+        vectorizer = TfidfVectorizer(stop_words=stopwords, ngram_range=tfidf_ngram_range)
 
         tfidf_matrix = vectorizer.fit_transform(documents)
         feature_names = vectorizer.get_feature_names_out()
@@ -133,7 +128,7 @@ class TextAnalyzer:
 
         # main method
     def analyze(
-            self, text, stopwords, prefixes, ngram_range, file_number=1, num_of_top_words=2, word_characters=1,
+            self, text, stopwords, prefixes, tfidf_ngram_range, file_number=1, num_of_top_words=2, word_characters=1,
             support_statistics=True, support_clean=True, normalize_text=False, rlen=True, ngrams_size=2):
         cleaned_text = ut.clean_text(text, normalize_text, rlen)
         if not cleaned_text.strip():
@@ -160,6 +155,9 @@ class TextAnalyzer:
         self._popular_word(cleaned_text, word_characters, stopwords, prefixes)
         self._words_count(cleaned_text)
         self._popular_phrases(cleaned_text, ngrams_size)
-        self._calculate_tfidf(cleaned_text, stopwords, ngram_range)
+
+        english_text, arabic_text = ut.split_text_by_language(cleaned_text)
+        documents = [t for t in [english_text, arabic_text] if t.strip()]
+        self._calculate_tfidf(documents, stopwords, tfidf_ngram_range)
 
         return self.results
