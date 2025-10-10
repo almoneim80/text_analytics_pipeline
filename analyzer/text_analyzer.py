@@ -44,7 +44,7 @@ class TextAnalyzer:
             return []
 
         if word_characters > 1:
-            words = ut.filtered_words_by_char_num(words, word_characters)
+            words = ut.filtered_words_by_char_num(" ".join(words), word_characters)
 
         if stopwords:
             words = ut.remove_stopwords(words, stopwords, prefixes)
@@ -127,8 +127,21 @@ class TextAnalyzer:
         return tfidf_scores
 
         # main method
+
+    # Text Categorization
+    def _classify_text(self, cleaned_text: str, topics):
+        counts = {topic: 0 for topic in topics}
+        for topic, words in topics.items():
+            counts[topic] = sum(cleaned_text.count(w) for w in words)
+
+        best_topic = max(counts, key=counts.get)
+        self.results["best_topic"] = best_topic
+        return best_topic if counts[best_topic] > 0 else "غير محدد"
+
+
+    # callable method
     def analyze(
-            self, text, stopwords, prefixes, tfidf_ngram_range, file_number=1, num_of_top_words=2, word_characters=1,
+            self, text, stopwords, prefixes, tfidf_ngram_range, topics, file_number=1, num_of_top_words=2, word_characters=1,
             support_statistics=True, support_clean=True, normalize_text=False, rlen=True, ngrams_size=2):
         cleaned_text = ut.clean_text(text, normalize_text, rlen)
         if not cleaned_text.strip():
@@ -155,6 +168,7 @@ class TextAnalyzer:
         self._popular_word(cleaned_text, word_characters, stopwords, prefixes)
         self._words_count(cleaned_text)
         self._popular_phrases(cleaned_text, ngrams_size)
+        self._classify_text(cleaned_text, topics)
 
         english_text, arabic_text = ut.split_text_by_language(cleaned_text)
         documents = [t for t in [english_text, arabic_text] if t.strip()]
