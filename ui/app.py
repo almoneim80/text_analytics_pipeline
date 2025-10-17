@@ -1,9 +1,14 @@
 import streamlit as st
-from ui.sidebar import load_config, sidebar_ui
-from ui.result_viewer import display_result
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from sidebar import load_config, sidebar_ui
+from result_viewer import display_result
 import analyzer.text_analyzer as ta
 import exporters.export_analyze as exa
-from ui.file_uploader import upload_files
+from file_uploader import upload_files
+from utils.logger import get_logger
+logger = get_logger("app")
 
 # Page setup
 st.set_page_config(page_title="🧠 Text Analyzer", layout="wide")
@@ -15,6 +20,7 @@ settings = sidebar_ui(config)
 
 # Upload files
 texts, uploaded_files = upload_files(config.get("supported_files", ["txt"]))
+logger.info(f"Result of calling upload_files method from upload_files class: texts={texts} | len={len(texts)} | uploaded_files={uploaded_files[:200]!r}")
 
 # Start analysis
 if st.button("Start Analysis"):

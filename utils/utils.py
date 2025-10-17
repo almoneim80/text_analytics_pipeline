@@ -1,9 +1,12 @@
 import string
 import re
 import emoji
+from utils.logger import get_logger
+logger = get_logger("utils")
+
 
 # cleaning text
-def clean_text(dirty_text, normalize_text, rlen):
+def clean_text(dirty_text: str, normalize_text: bool, rlen: bool):
     """
     Cleans the input text by removing punctuation, special symbols, digits, and whitespace characters.
 
@@ -17,6 +20,7 @@ def clean_text(dirty_text, normalize_text, rlen):
     >>> clean_text("Hello, world! 123")
     'Hello world '
     """
+    logger.info("From clean_text method: Before Cleaning text : len=%d | preview=%r", len(dirty_text), dirty_text[:200])
     symbols = string.punctuation + ":>,<،.#’”…“—?؟" + "0123456789" + '\n\t\r'
     cleaned_text = dirty_text.translate(str.maketrans('', '', symbols))
 
@@ -25,11 +29,12 @@ def clean_text(dirty_text, normalize_text, rlen):
 
     if rlen:
         cleaned_text = remove_links_emojis_numbers(cleaned_text)
-        
+
+    logger.info("From clean_text method: After Cleaning text : len=%d | preview=%r", len(cleaned_text), cleaned_text[:200])
     return cleaned_text
 
 
-def filtered_words_by_char_num(text, word_characters):
+def filtered_words_by_char_num(text: str, word_characters: int):
     """
     Filters words in a given text that have more characters than the specified threshold.
 
@@ -53,7 +58,8 @@ def filtered_words_by_char_num(text, word_characters):
             filtered_words.append(word)
     return filtered_words
 
-def filter_to_remove(coming_words_list, word):
+
+def filter_to_remove(coming_words_list: list[str], word: str):
     """
     Removes all occurrences of a specific word from a given list of words.
 
@@ -72,7 +78,7 @@ def filter_to_remove(coming_words_list, word):
     return [w for w in coming_words_list if w != word]
 
 
-def convert_to_list(text):
+def convert_to_list(text: str):
     """
     Converts a string of text into a list of words, splitting by spaces.
 
@@ -93,7 +99,7 @@ def convert_to_list(text):
     return words
 
 
-def words_length(text):
+def words_length(text: str):
     """
     Returns a list of lengths for each word in the given text.
 
@@ -111,7 +117,7 @@ def words_length(text):
     return lengths_list
 
 
-def normalize_arabic(text):
+def normalize_arabic(text: str):
     # Removing the mold
     text = re.sub(r'[\u0617-\u061A\u064B-\u0652\u0670]', '', text)
     # Unification of the letters 
@@ -127,10 +133,11 @@ def normalize_arabic(text):
     return text
 
 
-def remove_links_emojis_numbers(text):
+def remove_links_emojis_numbers(text: str):
     """
     Improved text cleaning: removal of links, emojis, Arabic and English numbers, and reduction of excess spaces.
     """
+
     # Removing links
     text = re.sub(r'https?://\S+|www\.\S+|\b\S+\.(com|net|org|edu|gov)\b', '', text)
     # Remove emoji
@@ -140,10 +147,30 @@ def remove_links_emojis_numbers(text):
 
     # Reduce excess white space
     text = re.sub(r'\s+', ' ', text).strip()
-    
+
     return text
 
-def remove_stopwords(words_list, stopwords, prefixes):
+
+def remove_stopwords(words_list: list[str], stopwords: list[str], prefixes: list[str]) -> list[str]:
+    """
+    Remove stopwords and specific prefixes from a list of words.
+
+    This function cleans a list of words by:
+      1. Removing defined prefixes (e.g., "ال", "ب", "و") if present at the start of a word.
+      2. Excluding words that appear in the stopwords list.
+
+    Args:
+        words_list (list[str]): List of words to process.
+        stopwords (list[str]): List of stopwords to remove.
+        prefixes (list[str]): List of prefixes to strip from words before filtering.
+
+    Returns:
+        list[str]: List of cleaned words with prefixes and stopwords removed.
+
+    Example:
+        >>> remove_stopwords(["المدرسة", "جميلة", "و", "النظافة"], ["و"], ["ال"])
+        ['مدرسة', 'جميلة', 'نظافة']
+    """
     filtered_words = []
     for word in words_list:
         for prefix in prefixes:
@@ -156,9 +183,28 @@ def remove_stopwords(words_list, stopwords, prefixes):
 
     return filtered_words
 
-def split_text_by_language(text):
+
+def split_text_by_language(text: str) -> tuple[str, str]:
+    """
+    Split a multilingual text into separate English and Arabic segments.
+
+    The function detects and extracts Arabic and English words using
+    Unicode and regex patterns, returning two distinct strings.
+
+    Args:
+        text (str): The input text containing mixed Arabic and/or English content.
+
+    Returns:
+        tuple[str, str]: A tuple (english_text, arabic_text) where:
+            - english_text (str): Contains all detected English words.
+            - arabic_text (str): Contains all detected Arabic words.
+
+    Example:
+        >>> split_text_by_language("Welcome مرحباً بك")
+        ('Welcome', 'مرحباً بك')
+    """
     arabic_chars = re.findall(r'[\u0600-\u06FF]+', text)
-    english_chars = re.findall(r'[A-Za-z]+',text)
+    english_chars = re.findall(r'[A-Za-z]+', text)
 
     arabic_text = " ".join(arabic_chars)
     english_text = " ".join(english_chars)

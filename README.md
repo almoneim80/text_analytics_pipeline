@@ -1,20 +1,136 @@
-Text Analyzer is a Python-based application designed to analyze textual data from multiple files efficiently. 
-The tool reads text files, cleans them by removing punctuation, numbers, and special characters, and then generates detailed statistical insights. 
-It identifies the most common words, calculates word and character counts, computes the average word length, and exports results to JSON and CSV formats for further use. 
-This project is ideal for students, researchers, or professionals who need to extract meaningful patterns from text data.
+# Text Analytics Pipeline 📝🔍
+## Example UI
+<p float="left">
+  <img src="assets/screenshots/img.png" width="300" />
+  <img src="assets/screenshots/img_1.png" width="300" />
+  <img src="assets/screenshots/img_2.png" width="300" />
+  <img src="assets/screenshots/img_4.png" width="300" />
+  <img src="assets/screenshots/img_4.png" width="300" />
+</p>
 
-Key Features:
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/streamlit-1.28-orange)](https://streamlit.io/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Read multiple .txt files with error handling for invalid paths and unsupported file types.
+## Overview
 
-Clean text by removing punctuation, numbers, and special symbols.
+**Text Analytics Pipeline** is an advanced, modular, and user-friendly platform for analyzing textual content.  
+It allows users to upload text files (or compressed archives), preprocess the text, extract useful statistics, and perform linguistic analysis such as:
 
-Calculate text statistics: word count, character count, average word length.
+- Word and character count
+- Average word length
+- Popular words and phrases
+- Stopwords filtering
+- TF-IDF scores
+- Language detection and separation (Arabic / English)
+- Data export (CSV, JSON, Excel)
 
-Identify the most popular words and top frequently occurring words with customizable filters.
+This project is **educational and professional**: designed to teach best practices in Python, text processing, and modular application architecture.
 
-Export analysis results to structured JSON and CSV files.
+---
 
-Fully modular Python implementation for easy integration with other data workflows.
+## Features
 
-Technologies Used: Python, pathlib, statistics, collections, string handling, file I/O.
+- 📤 Upload multiple `.txt` files or compressed archives (`.zip`, `.rar`)
+- ✨ Automatic text cleaning: remove punctuation, diacritics, emojis, numbers, and links
+- 🗣 Split text by language (Arabic / English)
+- 🧹 Stopwords removal with prefix handling
+- 📊 Compute TF-IDF scores and identify key phrases
+- 💾 Export results as JSON , CSV and EXCEL 
+- 🔧 Full logging for debugging and reproducibility
+- 🏗 Modular code structure: `ui`, `analyzer`, `utils`, `exporters`
+
+---
+
+## Installation
+
+### Prerequisites
+- Python 3.9+
+- pip
+
+### Clone the repository
+
+```bash
+git clone https://github.com/yourusername/text-analytics-pipeline.git
+cd text-analytics-pipeline
+```
+
+### Install dependencies
+pip install -r requirements.txt
+
+
+
+### Usage
+Run the Streamlit app:
+`streamlit run ui/app.py`
+
+
+Then, in your browser:
+Upload one or multiple .txt files, or a .zip/.rar archive containing text files.
+Review the extracted statistics.
+Export results as CSV or JSON.
+
+
+###   Project Structure
+TEXT_ANALYTICS_PIPELINE/
+├── analyzer/
+│   └── text_analyzer.py
+├── exporters/
+│   └── export_analyze.py
+├── logs/  
+├── outputs/  
+├── ui/
+│   ├── app.py
+│   ├── file_uploader.py
+│   ├── result_viewer.py
+│   └── sidebar.py
+├── utils/
+│   ├── logger.py
+│   └── utils.py
+├── .gitignore
+├── cli.py
+├── config.json
+├── README.md
+└── requirements.txt
+
+
+###   Example Output
+📄 Original Text
+🧹 Cleaned Text
+📊 Statistics:
+        Words Count
+        262
+        Characters Count
+        1567
+        Average Word Length
+        4.98
+        Most Popular Word
+        علي
+        Text Topic
+        تقني
+Most popular words: ["تكنولوجيا", "الذكاء", "العاطفي"]
+TF-IDF top keywords: ["رقمي", "مستقبل", "إبداع"]
+
+
+
+###   Technologies & Libraries
+Python 3.9+
+Streamlit (Web UI)
+scikit-learn (TF-IDF)
+pandas & numpy (data processing)
+regex & emoji (text cleaning)
+zipfile & rarfile (compressed archives)
+
+
+###   Contributing
+Contributions are welcome!
+Feel free to fork the repository, submit issues, or open pull requests.
+
+
+###   License
+This project is licensed under the MIT License - see the LICENSE
+ file for details.
+
+
+###   cAuthor
+Abdulmoneim Omar – Python Developer | AI Enthusiast

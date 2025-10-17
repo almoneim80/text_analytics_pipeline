@@ -11,14 +11,8 @@ venv/
 .vscode/
 .idea/
 
-# outputs
-outputs/
-
 # data
 data/
-
-# test
-tests/
 
 # /Logs
 logs/
