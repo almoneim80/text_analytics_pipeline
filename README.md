@@ -1,4 +1,4 @@
-# Text Analytics Pipeline 📝🔍
+# Text Analytics Pipeline
 ## Example UI
 <p float="left">
   <img src="assets/screenshots/img.png" width="300" />
@@ -31,14 +31,14 @@ This project is **educational and professional**: designed to teach best practic
 
 ## Features
 
-- 📤 Upload multiple `.txt` files or compressed archives (`.zip`, `.rar`)
-- ✨ Automatic text cleaning: remove punctuation, diacritics, emojis, numbers, and links
-- 🗣 Split text by language (Arabic / English)
-- 🧹 Stopwords removal with prefix handling
-- 📊 Compute TF-IDF scores and identify key phrases
-- 💾 Export results as JSON , CSV and EXCEL 
-- 🔧 Full logging for debugging and reproducibility
-- 🏗 Modular code structure: `ui`, `analyzer`, `utils`, `exporters`
+-  Upload multiple `.txt` files or compressed archives (`.zip`, `.rar`)
+-  Automatic text cleaning: remove punctuation, diacritics, emojis, numbers, and links
+-  Split text by language (Arabic / English)
+-  Stopwords removal with prefix handling
+-  Compute TF-IDF scores and identify key phrases
+-  Export results as JSON , CSV and EXCEL 
+-  Full logging for debugging and reproducibility
+-  Modular code structure: `ui`, `analyzer`, `utils`, `exporters`
 
 ---
 
@@ -95,9 +95,9 @@ TEXT_ANALYTICS_PIPELINE/
 
 
 ###   Example Output
-📄 Original Text
-🧹 Cleaned Text
-📊 Statistics:
+ Original Text
+ Cleaned Text
+ Statistics:
         Words Count
         262
         Characters Count
@@ -133,4 +133,5 @@ This project is licensed under the MIT License - see the LICENSE
 
 
 ###   cAuthor
+
 Abdulmoneim Omar – Python Developer | AI Enthusiast
