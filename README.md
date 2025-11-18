@@ -13,10 +13,8 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## Overview
-
 **Text Analytics Pipeline** is an advanced, modular, and user-friendly platform for analyzing textual content.  
 It allows users to upload text files (or compressed archives), preprocess the text, extract useful statistics, and perform linguistic analysis such as:
-
 - Word and character count
 - Average word length
 - Popular words and phrases
@@ -30,7 +28,6 @@ This project is **educational and professional**: designed to teach best practic
 ---
 
 ## Features
-
 -  Upload multiple `.txt` files or compressed archives (`.zip`, `.rar`)
 -  Automatic text cleaning: remove punctuation, diacritics, emojis, numbers, and links
 -  Split text by language (Arabic / English)
@@ -44,34 +41,31 @@ This project is **educational and professional**: designed to teach best practic
 
 ## Installation
 
-### Prerequisites
+**Prerequisites**
 - Python 3.9+
 - pip
 
-### Clone the repository
-
-```bash
+**Clone the repository**
+```
 git clone https://github.com/yourusername/text-analytics-pipeline.git
 cd text-analytics-pipeline
 ```
 
-### Install dependencies
+**Install dependencies**
 pip install -r requirements.txt
-
-
 
 ### Usage
 Run the Streamlit app:
-`streamlit run ui/app.py`
-
+```streamlit run ui/app.py```
 
 Then, in your browser:
-Upload one or multiple .txt files, or a .zip/.rar archive containing text files.
-Review the extracted statistics.
-Export results as CSV or JSON.
+- Upload one or multiple .txt files, or a .zip/.rar archive containing text files.
+- Review the extracted statistics.
+- Export results as CSV or JSON.
 
 
 ###   Project Structure
+```
 TEXT_ANALYTICS_PIPELINE/
 ├── analyzer/
 │   └── text_analyzer.py
@@ -92,12 +86,13 @@ TEXT_ANALYTICS_PIPELINE/
 ├── config.json
 ├── README.md
 └── requirements.txt
-
+```
 
 ###   Example Output
  Original Text
  Cleaned Text
  Statistics:
+ ```
         Words Count
         262
         Characters Count
@@ -105,21 +100,21 @@ TEXT_ANALYTICS_PIPELINE/
         Average Word Length
         4.98
         Most Popular Word
-        علي
+  علي
         Text Topic
         تقني
 Most popular words: ["تكنولوجيا", "الذكاء", "العاطفي"]
 TF-IDF top keywords: ["رقمي", "مستقبل", "إبداع"]
-
+```
 
 
 ###   Technologies & Libraries
-Python 3.9+
-Streamlit (Web UI)
-scikit-learn (TF-IDF)
-pandas & numpy (data processing)
-regex & emoji (text cleaning)
-zipfile & rarfile (compressed archives)
+- Python 3.9+
+- Streamlit (Web UI)
+- scikit-learn (TF-IDF)
+- pandas & numpy (data processing)
+- regex & emoji (text cleaning)
+- zipfile & rarfile (compressed archives)
 
 
 ###   Contributing
@@ -132,6 +127,6 @@ This project is licensed under the MIT License - see the LICENSE
  file for details.
 
 
-###   cAuthor
-
+###   cAuthors
 Abdulmoneim Omar – Python Developer | AI Enthusiast
+
